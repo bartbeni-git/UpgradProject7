@@ -1,14 +1,14 @@
 import React,{Component,Fragment} from 'react';
 import {Router, Route, Switch} from "react-router-dom"
 import Login from "./screens/login/Login";
-// import Home from "./screens/home/Home";
+import Home from "./screens/home/Home";
 import Profile from "./screens/profile/Profile";
 
 class App extends Component{
     render(){
         return(
             <div>
-               <Login />
+               <Home />
             </div>
         );
     }
