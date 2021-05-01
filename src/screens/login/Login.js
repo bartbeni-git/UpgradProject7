@@ -3,14 +3,15 @@ import React,{Component} from 'react';
 // import Home from "./screens/home/home";
 // import Profile from "./screens/profile/Profile";
 import Header from "../../common/header/Header"
-// import Card from '@material-ui/core/Card';
-// import { Button } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import { Button } from '@material-ui/core';
 // Constant stores crendtials and token
 const userDetails = {
     username: 'bart',
     password: 'bart',
-    accessToken: 'IGQVJXdW03dllYb1h0TURVTHFrWC1nTG5UcVpsX3ZAJTTJvN1A4TWZA2THFjVVpxNmtqTlY0RldNRUJQaU1NbnNLeVNVV1htaDJSSnFURkZAORFlKOHpXdGVzbW1VU2M0ck5hTXJ4bmg4V0xiWk5FSlQwSXpQVHhXbk1vRThr'
+    accessToken: 'IGQVJXLWcxX0ZAaRldTZAzRZAUlRaQWd2WWJBck40WHdKZAnRwZAUZAqY2F4X2ZAnVWhrTXF2d0JkeWdEa1A3NFY0YmpkMEVWdjVXb0E4ZAmtIbzJFQ0l3aGJrc0RKYVJOS0JqeGZAFRUxDanoxQ0NWakRmSUJOb2xtSUZAvdEt5RjVj'
 };
+
 
 class Login extends Component{
     constructor() {
@@ -21,15 +22,18 @@ class Login extends Component{
             usernameHelperTextDisplay: 'display-none',
             passwordHelperTextDisplay: 'display-none',
             incorrectCredentialHelperTextDisplay: 'display-none',
-            loginSuccess: false
+            loginSuccess: false            
         }
+        window.sessionStorage.setItem("UT",userDetails.accessToken);
     }
     render(){
         return(
             <div>
                 <div><Header/></div>
-                <div className='login-card-flex-container'>This is the Login Page</div>
-                {/* <Button variant="contained">Default</Button> */}
+                <div className='login-card-flex-container'>This is the Login Page
+                </div>
+                <Card className='login-card'>This is a card</Card>
+                <Button variant="contained">Default</Button>    
             </div>
         )
           } 
