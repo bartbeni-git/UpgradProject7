@@ -1,27 +1,15 @@
-.login-card-flex-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+.dispNone {
+    display:none;
 }
 
-.login-card {
-    width: 400px;
-    margin-top: 10px;
-}
-
-.login-form-control {
-    width: 350px;
-}
-
-.display-none {
-    display: none;
-}
-
-.display-block {
+.dispBlock {
     display: block;
 }
 
-.form-helper-text-red-color {
+.red {
     color: red;
 }
-
+.main-container{
+  display: flex;
+  flex-direction: column;
+}
