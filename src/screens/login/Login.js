@@ -3,8 +3,19 @@ import React,{Component} from 'react';
 // import Home from "./screens/home/home";
 // import Profile from "./screens/profile/Profile";
 import Header from "../../common/header/Header"
-import Card from '@material-ui/core/Card';
-import { Button } from '@material-ui/core';
+// import Box from '@material-ui/core/Box';
+import { 
+    Button,
+    Card,
+    CardContent,
+    FormControl,
+    FormHelperText,
+    Input,
+    InputLabel,
+    Typography } from '@material-ui/core';
+
+import './Login.css'
+
 // Constant stores crendtials and token
 const userDetails = {
     username: 'bart',
@@ -30,10 +41,45 @@ class Login extends Component{
         return(
             <div>
                 <div><Header/></div>
-                <div className='login-card-flex-container'>This is the Login Page
-                </div>
-                <Card className='login-card'>This is a card</Card>
-                <Button variant="contained">Default</Button>    
+                <div className='login-card-flex-container'>
+                <Card className='login-card'>
+                <CardContent>
+                <FormControl className='login-form-control'>
+                            <Typography variant="h5">
+                                <div fontWeight='fontWeightBold'>
+                                    LOGIN
+                                </div>
+                            </Typography>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                            <FormControl required className='login-form-control'>
+                                <InputLabel htmlFor='username'>Username</InputLabel>
+                                <Input id='username' name='username' type='text' onChange={this.onUsernameFieldChange}/>
+                                <FormHelperText className={this.state.usernameHelperTextDisplay}><span
+                                    className='form-helper-text-red-color'>required</span></FormHelperText>
+                            </FormControl>
+                        <br/>
+                        <br/>
+                            <FormControl required className='login-form-control'>
+                                <InputLabel htmlFor='password'>Password</InputLabel>
+                                <Input id='password' name='password' type='password'
+                                       onChange={this.onPasswordFieldChange}/>
+                                <FormHelperText className={this.state.passwordHelperTextDisplay}><span
+                                    className='form-helper-text-red-color'>required</span></FormHelperText>
+                            </FormControl>
+                        <br/>
+                        <br/>
+                        <FormHelperText className={this.state.incorrectCredentialHelperTextDisplay}><span
+                                className='form-helper-text-red-color'>Incorrect username and/or password</span></FormHelperText>
+                        <br/>
+                            <FormControl>
+                                <Button variant='contained' color='primary' onClick={this.onLogin}>Login</Button>
+                           </FormControl>
+                </CardContent>
+                </Card>
+                
+            </div>
             </div>
         )
           } 
