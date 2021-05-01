@@ -1,10 +1,10 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 // import {Route, Switch} from "react-router-dom"
 // import Home from "./screens/home/home";
 // import Profile from "./screens/profile/Profile";
 import Header from "../../common/header/Header"
 // import Box from '@material-ui/core/Box';
-import { 
+import {
     Button,
     Card,
     CardContent,
@@ -12,7 +12,8 @@ import {
     FormHelperText,
     Input,
     InputLabel,
-    Typography } from '@material-ui/core';
+    Typography
+} from '@material-ui/core';
 
 import './Login.css'
 
@@ -24,7 +25,13 @@ const userDetails = {
 };
 
 
-class Login extends Component{
+
+
+
+
+
+
+class Login extends Component {
     constructor() {
         super();
         this.state = {
@@ -33,55 +40,103 @@ class Login extends Component{
             usernameHelperTextDisplay: 'display-none',
             passwordHelperTextDisplay: 'display-none',
             incorrectCredentialHelperTextDisplay: 'display-none',
-            loginSuccess: false            
+            loginSuccess: false
         }
-        window.sessionStorage.setItem("UT",userDetails.accessToken);
+        window.sessionStorage.setItem("UT", userDetails.accessToken);
     }
-    render(){
-        return(
+    render() {
+
+
+
+
+        return (
             <div>
-                <div><Header/></div>
+                <div><Header /></div>
                 <div className='login-card-flex-container'>
-                <Card className='login-card'>
-                <CardContent>
-                <FormControl className='login-form-control'>
-                            <Typography variant="h5">
-                                <div fontWeight='fontWeightBold'>
-                                    LOGIN
+                    <Card className='login-card'>
+                        <CardContent>
+                            <FormControl className='login-form-control'>
+                                <Typography variant="h5">
+                                    <div fontWeight='fontWeightBold'>
+                                        LOGIN
                                 </div>
-                            </Typography>
-                        </FormControl>
-                        <br/>
-                        <br/>
+                                </Typography>
+                            </FormControl>
+                            <br />
+                            <br />
                             <FormControl required className='login-form-control'>
                                 <InputLabel htmlFor='username'>Username</InputLabel>
-                                <Input id='username' name='username' type='text' onChange={this.onUsernameFieldChange}/>
+                                <Input id='username' name='username' type='text' onChange={this.onUsernameFieldChange} />
                                 <FormHelperText className={this.state.usernameHelperTextDisplay}><span
                                     className='form-helper-text-red-color'>required</span></FormHelperText>
                             </FormControl>
-                        <br/>
-                        <br/>
+                            <br />
+                            <br />
                             <FormControl required className='login-form-control'>
                                 <InputLabel htmlFor='password'>Password</InputLabel>
                                 <Input id='password' name='password' type='password'
-                                       onChange={this.onPasswordFieldChange}/>
+                                    onChange={this.onPasswordFieldChange} />
                                 <FormHelperText className={this.state.passwordHelperTextDisplay}><span
                                     className='form-helper-text-red-color'>required</span></FormHelperText>
                             </FormControl>
-                        <br/>
-                        <br/>
-                        <FormHelperText className={this.state.incorrectCredentialHelperTextDisplay}><span
+                            <br />
+                            <br />
+                            <FormHelperText className={this.state.incorrectCredentialHelperTextDisplay}><span
                                 className='form-helper-text-red-color'>Incorrect username and/or password</span></FormHelperText>
-                        <br/>
+                            <br />
                             <FormControl>
                                 <Button variant='contained' color='primary' onClick={this.onLogin}>Login</Button>
-                           </FormControl>
-                </CardContent>
-                </Card>
-                
-            </div>
+                            </FormControl>
+                        </CardContent>
+                    </Card>
+
+                </div>
             </div>
         )
-          } 
+    }
+
+    onUsernameFieldChange = (e) => {
+        if (e.target.value === '') {
+            this.setState({
+                username: e.target.value,
+                usernameHelperTextDisplay: 'display-block',
+                incorrectCredentialHelperTextDisplay: 'display-none'
+            });
+        } else {
+            this.setState({username: e.target.value, usernameHelperTextDisplay: 'display-none'})
+        }
+    }
+    onPasswordFieldChange = (e) => {
+        if (e.target.value === '') {
+            this.setState({
+                password: e.target.value,
+                passwordHelperTextDisplay: 'display-block',
+                incorrectCredentialHelperTextDisplay: 'display-none'
+            });
+        } else {
+            this.setState({password: e.target.value, passwordHelperTextDisplay: 'display-none'})
+        }
+    }
+    onLogin = () => {
+        if (this.state.username === '') {
+            this.setState({usernameHelperTextDisplay: 'display-block'});
+        }
+        if (this.state.password === '') {
+            this.setState({passwordHelperTextDisplay: 'display-block'});
+        }
+
+        if (this.state.incorrectCredentialHelperTextDisplay === 'display-block') {
+            this.setState({incorrectCredentialHelperTextDisplay: 'display-none'});
+        }
+
+        if (this.state.username !== '' && this.state.password !== '') {
+            if (this.state.username === userDetails.username && this.state.password === userDetails.password) {
+                this.setState({incorrectCredentialHelperTextDisplay: 'display-none', loginSuccess: true});
+                sessionStorage.setItem("access-token", userDetails.accessToken);
+            } else {
+                this.setState({incorrectCredentialHelperTextDisplay: 'display-block'});
+            }
+        }
+    }
 }
 export default Login;
