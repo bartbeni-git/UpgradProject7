@@ -6,16 +6,17 @@
   height: 70px;
 }
 
+.app-header-right {
+  display: flex;
+  align-items: center;
+}
+
 .app-logo {
   color: #fff;
   font-size: 18px;
   padding-left: 15px;
 }
 
-.app-header-right {
-  display: flex;
-  align-items: center;
-}
 
 .search-box {
   border-radius: 4px;
