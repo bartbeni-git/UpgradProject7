@@ -17,8 +17,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
+//Importing all required components.
 
-// Creating Home class component to render the home page as per the design
+//This is the home component. It will render the home page with pictures, likes, comments, etc.
 class Home extends Component {
 
     constructor(props) {
@@ -31,77 +32,79 @@ class Home extends Component {
         }
     }
 
+    //ComponentDidMount will get the "access-token" 
+    //which is hard coded in the login page as "access-token"
     componentDidMount() {
         if (sessionStorage.getItem("access-token")) {
             this.fetchImageDetails();
         }
     }
 
-    /** Fetch data from instagram graph endpoint */
+    //This function will fetch the data from the 2 instagram APIs
     fetchImageDetails = () => {
         let that = this;
         fetch(
             `https://graph.instagram.com/me/media?fields=id,caption&access_token=${sessionStorage.getItem("access-token")}`
         )
             .then(rsp => {
-                    if (rsp.status === 200) {
-                        rsp.json().then(res => {
-                            const promises = res.data.map(item =>
-                                fetch(
-                                    `https://graph.instagram.com/${item.id}?fields=id,media_type,media_url,username,timestamp&access_token=${sessionStorage.getItem("access-token")}`
-                                )
-                            );
-                            Promise.all(promises)
-                                .then(responses => {
-                                        return Promise.all(
-                                            responses.map(function (response) {
-                                                return response.json();
-                                            })
-                                        );
-                                    },
-                                    err => console.log(err)
-                                )
-                                .then(function (data) {
-                                        data.forEach((media, i) => {
-                                            const mediaCaption = res.data[i];
-                                            if (mediaCaption.caption) {
-                                                media.caption = mediaCaption.caption
-                                                media.hashtags = mediaCaption.caption.split(' ').filter(str => str.startsWith('#')).join(' ');
-                                                media.trimmedCaption = mediaCaption.caption.replace(/(^|\s)#[a-zA-Z0-9][^\\p{L}\\p{N}\\p{P}\\p{Z}][\w-]*\b/g, '');
-                                            } else {
-                                                media.caption = null;
-                                            }
+                if (rsp.status === 200) {
+                    rsp.json().then(res => {
+                        const promises = res.data.map(item =>
+                            fetch(
+                                `https://graph.instagram.com/${item.id}?fields=id,media_type,media_url,username,timestamp&access_token=${sessionStorage.getItem("access-token")}`
+                            )
+                        );
+                        Promise.all(promises)
+                            .then(responses => {
+                                return Promise.all(
+                                    responses.map(function (response) {
+                                        return response.json();
+                                    })
+                                );
+                            },
+                                err => console.log(err)
+                            )
+                            .then(function (data) {
+                                data.forEach((media, i) => {
+                                    const mediaCaption = res.data[i];
+                                    if (mediaCaption.caption) {
+                                        media.caption = mediaCaption.caption
+                                        media.hashtags = mediaCaption.caption.split(' ').filter(str => str.startsWith('#')).join(' ');
+                                        media.trimmedCaption = mediaCaption.caption.replace(/(^|\s)#[a-zA-Z0-9][^\\p{L}\\p{N}\\p{P}\\p{Z}][\w-]*\b/g, '');
+                                    } else {
+                                        media.caption = null;
+                                    }
 
-                                            /** Adding likes and comments into each image */
-                                            const count = 0 + i;
-                                            media.likeCount = count;
-                                            media.likeStr = count > 1 ? 'likes' : 'like';
-                                            media.userLiked = false;
-                                            media.comments = [];
-                                            media.comment = '';
 
-                                            /** Method to change date format to mm/dd/yyyy HH:MM:SS format */
-                                            const mediaDate = new Date(media.timestamp);
-                                            const formattedDt = (mediaDate.getMonth() + 1).toString().padStart(2, '0') + '/'
-                                                + mediaDate.getDate().toString().padStart(2, '0') + '/'
-                                                + mediaDate.getFullYear().toString().padStart(4, '0') + ' '
-                                                + mediaDate.getHours().toString().padStart(2, '0') + ':'
-                                                + mediaDate.getMinutes().toString().padStart(2, '0') + ':'
-                                                + mediaDate.getSeconds().toString().padStart(2, '0');
-                                            media.timestamp = formattedDt;
-                                        });
-                                        that.setState({ mediaList: data, filteredMediaList: data });
-                                    },
-                                    err => console.log(err)
-                                ).catch(err => console.log(err));
-                        });
-                    }
-                },
+                                    const count = 0 + i;
+                                    media.likeCount = count;
+                                    media.likeStr = count > 1 ? 'likes' : 'like';
+                                    media.userLiked = false;
+                                    media.comments = [];
+                                    media.comment = '';
+
+                                    // Data format handler
+                                    const mediaDate = new Date(media.timestamp);
+                                    const formattedDt = (mediaDate.getMonth() + 1).toString().padStart(2, '0') + '/'
+                                        + mediaDate.getDate().toString().padStart(2, '0') + '/'
+                                        + mediaDate.getFullYear().toString().padStart(4, '0') + ' '
+                                        + mediaDate.getHours().toString().padStart(2, '0') + ':'
+                                        + mediaDate.getMinutes().toString().padStart(2, '0') + ':'
+                                        + mediaDate.getSeconds().toString().padStart(2, '0');
+                                    media.timestamp = formattedDt;
+                                });
+                                that.setState({ mediaList: data, filteredMediaList: data });
+                            },
+                                err => console.log(err)
+                            ).catch(err => console.log(err));
+                    });
+                }
+            },
                 err => console.log(err)
             ).catch(err => console.log(err));
     }
 
-    /** Function to increase/ decrease like count for an image */
+    //Handle likes
     favIconClickHandler = (likeIdx) => {
         let tempMediaList = this.state.filteredMediaList;
         tempMediaList.forEach((mediaObj, index) => {
@@ -114,14 +117,14 @@ class Home extends Component {
         this.setState({ filteredMediaList: tempMediaList });
     }
 
-    /** Update comment in state variable */
+    //Handle comments
     inputCommentChangeHandler = (e, idx) => {
         let tempMediaList = this.state.filteredMediaList;
         tempMediaList[idx].comment = e.target.value;
         this.setState({ filteredMediaList: tempMediaList });
     }
 
-    /** Add comment in an image card */
+
     addCommentHandler = (idx) => {
         let tempMediaList = this.state.filteredMediaList;
         let tempComments = tempMediaList[idx].comments;
@@ -131,7 +134,7 @@ class Home extends Component {
         this.setState({ filteredMediaList: tempMediaList });
     }
 
-    /** Search images based to the search text entered by the user*/
+    //Seach function
     searchHandler = (e) => {
         this.setState({ searchText: e.target.value }, () => {
             if (!this.state.searchText || this.state.searchText.trim() === "") {
@@ -149,7 +152,7 @@ class Home extends Component {
 
     }
 
-    /**Redirect to Profile Page when user clicks on My Account menu item */
+    //Method to handle redirect to Profile page
     myAccountHandler = () => {
         var likeCountList = [];
         var commentList = [];
@@ -165,7 +168,7 @@ class Home extends Component {
         sessionStorage.setItem('commentList', JSON.stringify(commentList));
         this.props.history.push('/profile');
     }
-
+    //Render function
     render() {
         if (!this.state.loggedIn) {
             return (
@@ -176,7 +179,7 @@ class Home extends Component {
             <div>
                 {/** Header part included here */}
                 <Header loggedIn={this.state.loggedIn} homePage={true}
-                        history={this.props.history} searchHandler={this.searchHandler} myAccountHandler={this.myAccountHandler} />
+                    history={this.props.history} searchHandler={this.searchHandler} myAccountHandler={this.myAccountHandler} />
 
                 {/** Image Card code start here */}
                 <div className="media-container">
@@ -204,10 +207,10 @@ class Home extends Component {
                                         <div className="media-icon-section">
                                             {media.userLiked ?
                                                 <FavoriteIcon style={{ color: red[500], fontSize: 30 }}
-                                                              onClick={() => this.favIconClickHandler(index)} />
+                                                    onClick={() => this.favIconClickHandler(index)} />
                                                 :
                                                 <FavoriteBorderIcon style={{ fontSize: 30 }}
-                                                                    onClick={() => this.favIconClickHandler(index)} />}
+                                                    onClick={() => this.favIconClickHandler(index)} />}
                                             <Typography style={{ paddingLeft: 15 }}>
                                                 {media.likeCount + ' ' + media.likeStr}
                                             </Typography>
@@ -225,12 +228,12 @@ class Home extends Component {
                                             <FormControl style={{ marginRight: 10 }} className='comment-form-control'>
                                                 <InputLabel htmlFor={'comment_' + index}>Add a comment</InputLabel>
                                                 <Input id={'comment_' + index} type='input'
-                                                       value={media.comment ? media.comment : ''}
-                                                       onChange={(e) => this.inputCommentChangeHandler(e, index)} />
+                                                    value={media.comment ? media.comment : ''}
+                                                    onChange={(e) => this.inputCommentChangeHandler(e, index)} />
                                             </FormControl>
                                             <FormControl style={{ verticalAlign: "bottom" }}>
                                                 <Button variant='contained' color='primary'
-                                                        onClick={() => this.addCommentHandler(index)}>
+                                                    onClick={() => this.addCommentHandler(index)}>
                                                     ADD
                                                 </Button>
                                             </FormControl>
@@ -241,7 +244,6 @@ class Home extends Component {
                         ))}
                     </Grid>
                 </div>
-                {/** Image Card code ends here */}
             </div>
         )
     }

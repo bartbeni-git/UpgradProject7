@@ -9,8 +9,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
+//importing all required components
 
-
+//This is the Login part. It will render the Login page with input fields, login button etc.
+//username, password, access token hard-coded here
 class Login extends Component {
     constructor() {
         super();
@@ -28,23 +30,17 @@ class Login extends Component {
         };
     }
 
-    /**
-     * Function that handles any changes in the username field and updates state accordingly
-     */
+//Functions to handle username/password fields, and login    
     inputUsernameChangeHandler = (event) => {
         this.setState({ username: event.target.value })
     }
 
-    /**
-     * Function that handles any changes in the password field and updates state accordingly
-     */
+    
     inputPasswordChangeHandler = (event) => {
         this.setState({ password: event.target.value })
     }
 
-    /**
-     * Function that handles what happens when we click the login button
-     */
+    
     loginHandler = () => {
         this.state.username === '' ? this.setState({ usernameRequired: 'dispBlock' })
             : this.setState({ usernameRequired: 'dispNone' });
@@ -70,14 +66,11 @@ class Login extends Component {
             });
         }
     }
-
+//Rendering the page with header
     render() {
         return (
-            <div>
-                {/** Header component included here */}
-                <Header />
-
-                {/** Login Card code begin */}
+            <div>                
+                <Header />                
                 <div className="login-card-container">
                     <Card className="login-card">
                         <CardContent>
@@ -115,8 +108,7 @@ class Login extends Component {
                             </Button>
                         </CardContent>
                     </Card>
-                </div>
-                {/** Login Card code ends */}
+                </div>                
             </div>
         )
     }
