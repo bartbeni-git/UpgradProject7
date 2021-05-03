@@ -1,147 +1,122 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './Header.css';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import InputBase from '@material-ui/core/InputBase';
-import {withStyles} from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import profilePic from '../../assets/profilePic.png';
+import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Popover from '@material-ui/core/Popover';
-import { Link } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import { withStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
-  grow: {
-    flexGrow: 1
-  },
-  search: {
-    position: 'relative',
-    borderRadius: '4px',
-    backgroundColor: '#c0c0c0',
-    marginLeft: 0,
-    width: '300px',
-  },
-  searchIcon: {
-    width: theme.spacing.unit * 4,
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color:'#000000'
-  },
-  inputInput: {
-    paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 4,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: 120,
-      '&:focus': {
-        width: 200
-      }
+const StyledMenu = withStyles({
+    paper: {
+        border: '1px solid #d3d4d5',
+        backgroundColor: '#DFDFDF',
+        padding: "6px 15px",
+        boxShadow: 'none',
+        marginTop: 2
     }
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-  },
-  appHeader:{
-    backgroundColor:'#263238'
-  },
-  hr:{
-    height:'1.5px',
-    backgroundColor:'#f2f2f2',
-    marginLeft:'5px',
-    marginRight:'5px'
-  }
-})
+})(Menu);
 
-class Header extends Component{
-
-  constructor(props){
-    super(props);
-    this.state = {
-      anchorEl: null,
-    };
-  }
-
-  render(){
-    const {classes,screen} = this.props;
-    return (<div>
-        <AppBar className={classes.appHeader}>
-          <Toolbar>
-            {(screen === "Login" || screen === "Home") && <span className="header-logo">Image Viewer</span>}
-            {(screen === "Profile") && <Link style={{ textDecoration: 'none', color: 'white' }} to="/home"><span className="header-logo">Image Viewer</span></Link>}
-            <div className={classes.grow}/>
-            {(screen === "Home") &&
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase onChange={(e)=>{this.props.searchHandler(e.target.value)}} placeholder="Search…" classes={{
-                    input: classes.inputInput
-                  }}/>
-              </div>
+const StyledMenuItem = withStyles(theme => ({
+    root: {
+        padding: 4,
+        minHeight: 'auto',
+        '&:focus': {
+            backgroundColor: theme.palette.grey,
+            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                color: theme.palette.common.white,
             }
-            {(screen === "Home" || screen === "Profile")  &&
-              <div>
-                <IconButton onClick={this.handleClick}>
-                  <Avatar alt="Remy Sharp" src="https://scontent-maa2-1.cdninstagram.com/v/t51.29350-15/177009929_790902331542980_4352646094238819004_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=Jy_W-1OosrcAX-izzED&_nc_oc=AQnyOd55_9pTmMZhV1Te4OidExvWeR3XKEzXrn8pDiRn9_6CQ95cpBru3-PNkUdjJej4B49COY-JGgQhW2u-QIzM&_nc_ht=scontent-maa2-1.cdninstagram.com&oh=1c91cd560373a501127396d92ff252ab&oe=60B35C60" className={classes.avatar} style={{border: "1px solid #fff"}}/>
-                </IconButton>
-                <Popover
-                  id="simple-menu"
-                  anchorEl={this.state.anchorEl}
-                  open={Boolean(this.state.anchorEl)}
-                  onClose={this.handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}>
-                    <div style={{padding:'5px'}}>
-                      { (screen === "Home") &&
-                        <div>
-                          <MenuItem onClick={this.handleAccount}>My Account</MenuItem>
-                          <div className={classes.hr}/>
+        }
+    }
+}))(MenuItem);
+
+class Header extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            openMenu: false,
+            anchorEl: null
+        }
+    }
+
+    /**Handler to update state variable 'openMenu' and open the Menu item when the user clicks on profile icon */
+    profileIconHandler = (event) => {
+        this.setState({ openMenu: !this.state.openMenu, anchorEl: event.currentTarget })
+    }
+
+    /**Handler to update state variable 'openMenu' and close the Menu item when the user clicks on profile icon
+     * or anywhere in the screen
+     */
+    closeMenu = () => {
+        this.setState({ openMenu: !this.state.openMenu, anchorEl: null })
+    }
+
+    /**Handler to log out when user clicks on Logout menu item and remove access token from session */
+    logoutHandler = () => {
+        sessionStorage.removeItem('access-token');
+        this.props.history.push('/');
+    }
+
+    /**Handler to take user back to Home page when clicked on logo */
+    logoHandler = () => {
+        this.props.history.push('/home');
+    }
+
+    render() {
+        return (
+            <div>
+                <header className="app-header">
+                    {this.props.loggedIn && this.props.history.location.pathname === '/profile' ?
+                        <div onClick={this.logoHandler} className="app-logo-clickable">
+                            <span className="app-logo">Image Viewer</span>
                         </div>
-                      }
-                      <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-                    </div>
-                </Popover>
-              </div>
-            }
-          </Toolbar>
-        </AppBar>
-    </div>)
-  }
-
-  handleClick = (event) =>{
-    this.setState({
-      anchorEl: event.currentTarget
-    })
-  }
-
-  handleAccount = ()=>{
-    this.props.handleAccount();
-    this.handleClose();
-  }
-
-  handleLogout = ()=>{
-    this.props.handleLogout();
-    this.handleClose();
-  }
-
-  handleClose = () =>{
-    this.setState({ anchorEl: null });
-  }
+                        :
+                        <div>
+                            <span className="app-logo">Image Viewer</span>
+                        </div>}
+                    {/**Below section needs to be displayed only for Home Page */}
+                    {/**Home Page Header section starts here */}
+                    {this.props.loggedIn ?
+                        <div className="app-header-right">
+                            {this.props.homePage ?
+                                <Input type="search" placeholder="Search…" disableUnderline className="search-box"
+                                       startAdornment={
+                                           <InputAdornment position="start" className="search-icon">
+                                               <SearchIcon />
+                                           </InputAdornment>
+                                       } onChange={this.props.searchHandler} /> : ''}
+                            <IconButton aria-controls="simple-menu" aria-haspopup="true"
+                                        onClick={this.profileIconHandler} style={{ padding: "5px 10px" }}>
+                                <Avatar variant="circular" alt={profilePic} src={profilePic} ></Avatar>
+                            </IconButton>
+                            <StyledMenu id="simple-menu" open={this.state.openMenu} onClose={this.closeMenu}
+                                        anchorEl={this.state.anchorEl} getContentAnchorEl={null}
+                                        anchorOrigin={{ vertical: "bottom", horizontal: "right" }} keepMounted>
+                                {this.props.homePage ?
+                                    <StyledMenuItem onClick={this.props.myAccountHandler}>
+                                        <Typography>My Account</Typography>
+                                    </StyledMenuItem>
+                                    : ''}
+                                {this.props.homePage ?
+                                    <Divider variant="middle" />
+                                    : ''}
+                                <StyledMenuItem onClick={this.logoutHandler}>
+                                    <Typography>Logout</Typography>
+                                </StyledMenuItem>
+                            </StyledMenu>
+                        </div>
+                        : ''}
+                    {/**Home Page Header section ends here */}
+                </header>
+            </div >
+        )
+    }
 }
 
-export default withStyles(styles)(Header)
+export default Header;

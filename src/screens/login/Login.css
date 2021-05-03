@@ -1,15 +1,28 @@
+
+.login-card-container {
+    display: flex;
+    justify-content: center;
+}
+
+.login-card {
+    margin: 15px;
+    width: 400px;
+    padding: 20px 30px;
+}
+
+.login-form-control {
+    width: 365px;
+}
+
 .dispNone {
-    display:none;
+    display: none;
 }
 
 .dispBlock {
     display: block;
 }
 
-.red {
+.credential-required {
     color: red;
-}
-.main-container{
-  display: flex;
-  flex-direction: column;
+    font-size: 13px;
 }
